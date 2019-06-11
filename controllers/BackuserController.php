@@ -5,9 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\models\BackendUsers;
 use app\models\BackendUserSearch;
+use app\models\LoginUser;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * BackuserController implements the CRUD actions for BackendUsers model.
@@ -20,6 +22,16 @@ class BackuserController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::classname(),
+                'only' => ['create','update','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ],
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -127,7 +139,7 @@ class BackuserController extends Controller
     public function actionLogin()
     {
         if(!\Yii::$app->user->isGuest){
-            return $this->goHome();
+            return $this->redirect(['backuser/login']);
         }
         $model = new \app\models\LoginUser();
 
@@ -150,12 +162,13 @@ class BackuserController extends Controller
     }
     public function actionRegister()
     {
-        $model = new \app\models\RegisterUser();
+        $model = new \app\models\BackendUsers();
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
                 // form inputs are valid, do something here
-                return $this->redirect(['backuser/login']);
+                Yii::$app->session->setFlash('success','You have registered Successfully');
+                return $this->redirect(['index']);
             }
         }
 

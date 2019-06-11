@@ -4,11 +4,15 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\RegisterUser */
+/* @var $model app\models\BackendUsers */
 /* @var $form ActiveForm */
 ?>
 <div class="register">
-
+<?php
+    if(Yii::$app->session->hasFlash('success')){
+        echo "<div class='alert alert-success'>".Yii::$app->session->getFlash('success')."</div>";
+    }
+?>
     <?php $form = ActiveForm::begin(); ?>
 
         <?= $form->field($model, 'firstName') ?>
@@ -18,7 +22,7 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'password') ?>
     
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('Register', ['class' => 'btn btn-primary']) ?>
         </div>
     <?php ActiveForm::end(); ?>
 
